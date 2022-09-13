@@ -1,0 +1,116 @@
+%!TEX TS-program = pdflatexmk
+
+% Copyright 2022 Martin Scheidt, ORCID: 0000-0002-9384-8945 (ISC license)
+% Permission to use, copy, modify, and/or distribute this file for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
+
+% \tikzstyle{debug}=[draw=magenta,thin]
+\tikzstyle{debug}=[]
+%% dimensions
+\def\Xend{+23}
+\def\Yend{-10}
+\newlength{\trainlength}\setlength{\trainlength}{3cm}
+\newlength{\clearingtime}\setlength{\clearingtime}{0.4cm}
+\newlength{\releasetime}\setlength{\releasetime}{0.4cm}
+
+%% main coordinates
+\coordinate (base) at (    0, 0);
+\coordinate (end)  at (\Xend, 0);
+
+\coordinate (VP1)  at ( 5  , 0); % view point
+\coordinate (DS1)  at ( 6  , 0); % distant signal
+\coordinate (BS1)  at ( 9  , 0); % block signal
+\coordinate (EoA1) at (15  , 0); % end of movement authority = BS2
+\coordinate (CP1)  at (16.5, 0); % clearing point
+\coordinate (BS2)  at (15  , 0);
+
+\coordinate (T)  at ( 4, 0); % train head
+\coordinate (gT) at (20, 0); % ghost train head
+
+%%%%%%%%%%%%%%%%%{ grid and axis }%%%%%%%%%%%%%%%%%%%%%%
+% \draw [help lines] (0,0) grid[xstep=1,ystep=1] (\Xend,\Yend);
+
+\begin{scope}[shift={(0,0)},scale=0.5]
+  \draw [->,>=latex,line width=1pt,name path=x-axis,foreground] (base) -- ++(1, 0) node[right] {\footnotesize $s$};
+  \draw [->,>=latex,line width=1pt,name path=y-axis,foreground] (base) -- ++(0,-1) node[below] {\footnotesize $t$};
+\end{scope}
+
+%%%%%%%%%%%%%%%%%{ topology }%%%%%%%%%%%%%%%%%%%%%%
+\tikzstyle{topology_label}=[above=0.6cm,rotate=-90,left,fill=background,text=foreground]
+%% tracks
+\maintrack ([shift={(0,1)}] base) -- ([shift={(0,1)}] end);
+
+%% objects
+\train[run=normal,forward,length=\trainlength] at ([shift={(0,1)}]  T) (train);
+\train[forward,length=\trainlength,ghost]      at ([shift={(0,1)}] gT) ();
+
+\viewpoint[forward] at ([shift={(0,1)}] VP1);
+\node[topology_label] at ([shift={(0,1)}] VP1)%
+  {\IfLanguage{english}{view point}\IfLanguage{ngerman}{Sichtpunkt}};
+
+\distantsignal[forward] at ([shift={(0,1)}] DS1) label ();
+\node[topology_label] at ([shift={(0,1)}] DS1)%
+  {\IfLanguage{english}{distant signal}\IfLanguage{ngerman}{Vorsignal}};
+
+\blocksignal[forward] at ([shift={(0,1)}] BS1) label ();
+\blocksignal[forward] at ([shift={(0,1)}] BS2) label ();
+\node[topology_label] at ([shift={(0,1)}] BS1)%
+  {\IfLanguage{english}{block signal}\IfLanguage{ngerman}{Blocksignal}};
+
+\blockclearing[forward] at ([shift={(0,1)}] CP1) label ();
+\node[topology_label] at ([shift={(0,1)}] CP1)%
+  {\IfLanguage{english}{block clearing point}\IfLanguage{ngerman}{Signalzugschlussstelle}};
+
+%%%%%%%%%%%%%%%%%{ train run }%%%%%%%%%%%%%%%%%%%%%%
+%% trainrun-head
+\draw[name path=trainrun-head,foreground] (base) -- (\Xend,\Yend)%
+  node[sloped,very near start,fill=background,text=foreground]%
+  {\IfLanguage{english}{front of train}\IfLanguage{ngerman}{Zugspitze}};
+%% calculating time the trains needs to travel its own length
+\path[name path=time-for-trainlength,debug] ([shift={(-\trainlength,0)}] \Xend,\Yend) -- ++(0,\trainlength);
+\path[name intersections={of=trainrun-head and time-for-trainlength, by=time-for-trainlength},debug];
+\coordinate  (time-for-trainlength) at ($(\Xend,\Yend) - (time-for-trainlength) - (\trainlength,0)$);
+%% trainrun-rear
+\draw[dashed,name path=trainrun-rear,foreground] (time-for-trainlength) -- ([shift={(-\trainlength,0)}] \Xend,\Yend)%
+  node[sloped,very near start,fill=background,text=foreground]%
+  {\IfLanguage{english}{rear of train}\IfLanguage{ngerman}{Zugschluss}};
+
+%%%%%%%%%%%%%%{ blocking time }%%%%%%%%%%%%%%%%%%%
+%% coordinate help lines for objects
+\path[name path=pos-VP1,debug]  (VP1)  -- ++(0,\Yend);
+\path[name path=pos-DS1,debug]  (DS1)  -- ++(0,\Yend);
+\path[name path=pos-BS1,debug]  (BS1)  -- ++(0,\Yend);
+\path[name path=pos-BS2,debug]  (BS2)  -- ++(0,\Yend);
+\path[name path=pos-CP1,debug]  (CP1)  -- ++(0,\Yend);
+%% coordinate help lines for train run head
+\path[name intersections={of=trainrun-head and pos-VP1,by=coord-head-VP1},name path=head-VP1,debug]%
+  let \p1=(coord-head-VP1) in (\x1,\y1) -- (\Xend,\y1) (\x1,\y1) -- (0,\y1);
+\path[name intersections={of=trainrun-head and pos-DS1,by=coord-head-DS1},name path=head-DS1,debug]%
+  let \p1=(coord-head-DS1) in (\x1,\y1) -- (\Xend,\y1) (\x1,\y1) -- (0,\y1);
+\path[name intersections={of=trainrun-head and pos-BS1,by=coord-head-BS1},name path=head-BS1,debug]%
+  let \p1=(coord-head-BS1) in (\x1,\y1) -- (\Xend,\y1) (\x1,\y1) -- (0,\y1);
+\path[name intersections={of=trainrun-head and pos-BS2,by=coord-head-BS2},name path=head-BS2,debug]%
+  let \p1=(coord-head-BS2) in (\x1,\y1) -- (\Xend,\y1) (\x1,\y1) -- (0,\y1);
+%% coordinate help lines for train run rear
+\path[name intersections={of=trainrun-rear and pos-CP1,by=coord-rear-CP1},name path=rear-CP1,debug]%
+  let \p1=(coord-rear-CP1) in (\x1,\y1) -- (\Xend,\y1) (\x1,\y1) -- (0,\y1);
+
+%% draw blocking time
+\draw[foreground] let \p1=(coord-head-VP1),\p2=(BS1),\p3=(BS2) in
+  (\x2,\y1) rectangle ($(\x3,\y1)+(0,\clearingtime)$) node[midway]
+  {\IfLanguage{english}{time for clearing the signal}\IfLanguage{ngerman}{Fahrstraßenbildezeit}};
+\draw[foreground] let \p1=(coord-head-DS1),\p2=(BS1),\p3=(coord-head-VP1),\p4=(BS2) in
+  (\x2,\y1) rectangle (\x4,\y3) node[midway]%
+  {\IfLanguage{english}{signal watch time}\IfLanguage{ngerman}{Sichtzeit}};
+\draw[dotted,foreground] let \p1=(coord-head-VP1),\p2=(BS1) in (VP1) -- (coord-head-VP1) -- (\x2,\y1);
+\draw[foreground] let \p1=(coord-head-DS1),\p2=(BS2) in (coord-head-BS1) rectangle (\x2,\y1) node[midway]%
+  {\IfLanguage{english}{approach time}\IfLanguage{ngerman}{Annäherungsfahrzeit}};
+\draw[dotted,foreground] let \p1=(coord-head-DS1),\p2=(BS1) in (DS1) -- (coord-head-DS1) -- (\x2,\y1);
+\draw[foreground] (coord-head-BS1) rectangle (coord-head-BS2) node[midway]%
+  {\IfLanguage{english}{time between block signals}\IfLanguage{ngerman}{Fahrzeit im Block}};
+\draw[foreground] let \p1=(coord-rear-CP1),\p2=(BS1) in
+  (coord-head-BS2) rectangle (\x2,\y1) node[midway]%
+  {\IfLanguage{english}{clearing time}\IfLanguage{ngerman}{Räumfahrzeit}};
+\draw[dotted,foreground] let \p1=(coord-rear-CP1),\p2=(BS2) in (CP1) -- (coord-rear-CP1) -- (\x2,\y1);
+\draw[foreground] let \p1=(coord-rear-CP1),\p2=(BS1),\p3=(BS2) in
+  (\x2,\y1) rectangle ($(\x3,\y1)-(0,\releasetime)$) node[midway]
+  {\IfLanguage{english}{release time}\IfLanguage{ngerman}{Fahrstraßenauflösezeit}};

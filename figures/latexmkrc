@@ -1,0 +1,10 @@
+END {
+  system('convert -density 300 blocking_time_light.pdf blocking_time_light.png');
+  system('convert blocking_time_light.png -fuzz 20% -transparent white blocking_time_light.png');
+  system('convert -density 300 blocking_time_dark.pdf blocking_time_dark.png');
+  system('convert blocking_time_dark.png -fuzz 20% -transparent black -colorspace RGB blocking_time_dark.png');
+  system('convert -density 300 infra_light.pdf infra_light.png');
+  system('convert infra_light.png -fuzz 20% -transparent white infra_light.png');
+  system('convert -density 300 infra_dark.pdf infra_dark.png');
+  system('convert infra_dark.png -fuzz 20% -transparent black -colorspace RGB infra_dark.png');
+}

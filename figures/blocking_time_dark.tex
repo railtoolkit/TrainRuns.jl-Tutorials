@@ -1,0 +1,25 @@
+%!TEX TS-program = pdflatexmk
+
+% Copyright 2022 Martin Scheidt, ORCID: 0000-0002-9384-8945 (ISC license)
+% Permission to use, copy, modify, and/or distribute this file for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
+
+\documentclass[border=0cm]{standalone}
+
+\usepackage{lmodern,microtype,mathptmx,courier,tikz-trackschematic}
+\usepackage[main=english,ngerman]{babel}
+\usepackage{iflang} % needs babel
+\newcommand{\IfLanguage}[2]{\IfLanguageName{#1}{#2}{}}
+\usetikzlibrary{intersections,calc,backgrounds}
+
+\colorlet{background}{black}
+\colorlet{foreground}{white}
+
+\begin{document}
+
+  % \selectlanguage{ngerman}% or comment for english
+
+  \begin{tikzpicture}[font=\sffamily,background rectangle/.style={fill=background}, show background rectangle]
+    \input{blocking_time.tikz}
+  \end{tikzpicture}
+
+\end{document}

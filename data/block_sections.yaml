@@ -1,0 +1,26 @@
+%YAML 1.2
+---
+schema: https://railtoolkit.org/schema/running-path.json
+schema_version: "2022.05"
+paths:
+  - name: "10 km, 160 km/h"
+    id: block_sections
+    UUID: b3e6f0b0-6109-45ea-a1e2-0f5b03c66203
+    points_of_interest:
+      # [ station in m,                 name,   front or rear ]
+      - [      1850.00,       "0:view point",           front ]
+      - [      2000.00,   "0:distant signal",           front ]
+      - [      3000.00,      "0:main signal",           front ]
+      - [      3050.00,   "0:clearing point",            rear ]
+      - [      3350.00,       "1:view point",           front ]
+      - [      3500.00,   "1:distant signal",           front ]
+      - [      4500.00,      "1:main signal",           front ]
+      - [      4550.00,   "1:clearing point",            rear ]
+      - [      4850.00,       "2:view point",           front ]
+      - [      5000.00,   "2:distant signal",           front ]
+      - [      6000.00,      "2:main signal",           front ]
+      - [      6050.00,   "2:clearing point",            rear ]
+    characteristic_sections:
+      # [ station in m,  speed limit in km/h, resistance in ‰ ]
+      - [          0.0,                  160,            0.00 ]
+      - [      10000.0,                  160,            0.00 ]

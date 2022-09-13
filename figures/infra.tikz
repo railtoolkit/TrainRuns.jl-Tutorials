@@ -1,0 +1,20 @@
+%!TEX TS-program = pdflatexmk
+
+% Copyright 2022 Martin Scheidt, ORCID: 0000-0002-9384-8945 (ISC license)
+% Permission to use, copy, modify, and/or distribute this file for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
+
+\foreach \i in {0,1,2} {%
+  \coordinate (base)  at ($(0.0,0)+\i*(7,0)$);
+  \coordinate (end)   at ($(7.0,0)+\i*(7,0)$);
+  \coordinate (VP\i)  at ($(0.5,0)+\i*(7,0)$); % view point
+  \coordinate (DS\i)  at ($(2.0,0)+\i*(7,0)$); % distant signal
+  \coordinate (BS\i)  at ($(5.0,0)+\i*(7,0)$); % block signal
+  \coordinate (CP\i)  at ($(6.5,0)+\i*(7,0)$); % clearing point
+
+  \maintrack  (base) -- (end);
+
+  \viewpoint[forward]     at (VP\i);
+  \distantsignal[forward] at (DS\i) label (\i);
+  \blocksignal[forward]   at (BS\i) label (\i);
+  \blockclearing[forward] at (CP\i) label (\i);
+}

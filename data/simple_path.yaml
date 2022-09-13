@@ -1,0 +1,26 @@
+%YAML 1.2
+---
+schema: https://railtoolkit.org/schema/running-path.json
+schema_version: "2022.05"
+paths:
+  - name: "10 km, different gradient, 160 km/h"
+    id: simple
+    UUID: efdd7a26-0bc8-44eb-8c95-7c659deaaef6
+    points_of_interest:
+      # [ station in m,                 name,   front or rear ]
+      - [      5000.00,             "label1",           front ]
+      - [      7500.00,             "label2",            rear ]
+    characteristic_sections:
+      # [ station in m,  speed limit in km/h, resistance in ‰ ]
+      - [          0.0,                  160,            0.00 ]
+      - [       1000.0,                  160,            1.00 ]
+      - [       2000.0,                  160,            2.00 ]
+      - [       3000.0,                  160,            5.00 ]
+      - [       4000.0,                  160,           -3.00 ]
+      - [       5000.0,                  160,            5.00 ]
+      - [       6000.0,                  160,          -10.00 ]
+      - [       7000.0,                  160,           15.00 ]
+      - [       8000.0,                  160,          -10.00 ]
+      - [       8500.0,                  160,           20.00 ]
+      - [       9000.0,                  160,            0.00 ]
+      - [      10000.0,                  160,            0.00 ]
