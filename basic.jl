@@ -273,16 +273,16 @@ block_length_A = egress_block_A - ingress_block_A
 md"And we can do the same for Block B (from signal 1 to signal 2):"
 
 # ╔═╡ b65e4278-1fe1-458e-8c9b-d79caf9b83eb
-start_block_B = filter(row -> any(occursin.(["1:view point"], row.label)), run_block)[1,:t]
+start_block_B = filter(row -> row.label == "1:view point", run_block)[1,:t]
 
 # ╔═╡ a4d4e1d3-0f7b-4fbc-a173-ea9e1ee121bb
-ingress_block_B = filter(row -> any(occursin.(["1:main signal"], row.label)), run_block)[1,:s]
+ingress_block_B = filter(row -> row.label == "1:main signal", run_block)[1,:s]
 
 # ╔═╡ 30c676d2-fbe2-402e-b443-a2b547ada139
-end_block_B = filter(row -> any(occursin.(["2:clearing point"], row.label)), run_block)[1,:t]
+end_block_B = filter(row -> row.label == "2:clearing point", run_block)[1,:t]
 
 # ╔═╡ 83886f8d-8dad-4d70-b3d6-236ab1e3835e
-egress_block_B = filter(row -> any(occursin.(["2:main signal"], row.label)), run_block)[1,:s]
+egress_block_B = filter(row -> row.label == "2:main signal", run_block)[1,:s]
 
 # ╔═╡ 390f7bb4-55d8-44ba-b229-7d66ac4fbe4e
 blocking_time_B = end_block_B - start_block_B
