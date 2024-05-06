@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.11
+# v0.19.40
 
 #> [frontmatter]
 #> author = "Martin Scheidt, ORCID: 0000-0002-9384-8945"
@@ -18,6 +18,7 @@ begin
 	import Pkg
 	Pkg.add("TrainRuns") # main package to calculate train runs
 	Pkg.add("PlutoUI")   # figures in Pluto Notebook
+	Pkg.add("DataFrames")# work with DataFrames
 	Pkg.add("Makie")     # visualization
 	Pkg.add("CairoMakie")# visualization
 end
@@ -28,6 +29,9 @@ using PlutoUI; TableOfContents()
 
 # ╔═╡ 99d71c61-ad79-49c6-a010-2ab7b47ca4fc
 using TrainRuns
+
+# ╔═╡ 237c8c1f-7446-448a-9889-183a6ae9ef1b
+using DataFrames;
 
 # ╔═╡ 18c765e3-0e89-47b5-8684-5b32b9c4f4b7
 using CairoMakie
@@ -238,27 +242,36 @@ md"Then, we can calculate the passing of the train at these points:"
 run_block = trainrun(passenger_train, block_sections, settings_poi)
 
 # ╔═╡ bfa544d5-cae5-4195-8e78-20479d8bbbb5
-md"With the _DataFrame_ above we can filter the times we need for the occupation time of Block A (from signal 0 to signal 1).
+md"To work with Dataframes we need the DataFrames package:"
+
+# ╔═╡ 04d8a12a-3e1d-4fb5-9c5a-94102bc1f5f4
+md"To make it easier to access the calculated values, the computed values are grouped by label:"
+
+# ╔═╡ 56fa6b2a-803d-41f7-87ad-8daea736ea29
+pois = groupby(run_block, :label)
+
+# ╔═╡ e8564003-3767-4bda-990b-5f0d04d66bb3
+md"With the _GroupedDataFrame_ above we can easily access the times we need for the occupation time of Block A (from signal 0 to signal 1).
 
 The starting time of the occupation begins with the view point:"
 
 # ╔═╡ 8c044304-e067-46fd-ae04-2bccf6ceafd6
-start_block_A = filter(row -> any(occursin.(["0:view point"], row.label)), run_block)[1,:t]
+start_block_A = pois[(label="0:view point",)][1,:t]
 
 # ╔═╡ 247477d9-6a3d-44f3-b9a0-854cb9abad3b
 md"The trains enters the block at the first main signal (0) and leaves it at the second main signal (1):"
 
 # ╔═╡ e356bb7b-ae58-4acc-b343-9c010cb014d2
-ingress_block_A = filter(row -> any(occursin.(["0:main signal"], row.label)), run_block)[1,:s]
+ingress_block_A = pois[(label="0:main signal",)][1,:s]
 
 # ╔═╡ 30fdadea-198f-4327-ba48-d370210d462e
-egress_block_A = filter(row -> any(occursin.(["1:main signal"], row.label)), run_block)[1,:s]
+egress_block_A = pois[(label="1:main signal",)][1,:s]
 
 # ╔═╡ f3743920-b394-45ef-907a-48a1c3f57018
 md"The occupation time ends when the train clears the block at the clearing point:"
 
 # ╔═╡ 5e8b1b7c-29f4-4e10-891c-9ed09e58b04b
-end_block_A = filter(row -> any(occursin.(["1:clearing point"], row.label)), run_block)[1,:t]
+end_block_A = pois[(label="1:clearing point",)][1,:t]
 
 # ╔═╡ 09abccd2-6c8c-4aaa-ba00-2672ffb0e960
 md"With the filtered data we can calculate the occupation time and the block length:"
@@ -273,16 +286,16 @@ block_length_A = egress_block_A - ingress_block_A
 md"And we can do the same for Block B (from signal 1 to signal 2):"
 
 # ╔═╡ b65e4278-1fe1-458e-8c9b-d79caf9b83eb
-start_block_B = filter(row -> row.label == "1:view point", run_block)[1,:t]
+start_block_B = pois[(label="1:view point",)][1,:t]
 
 # ╔═╡ a4d4e1d3-0f7b-4fbc-a173-ea9e1ee121bb
-ingress_block_B = filter(row -> row.label == "1:main signal", run_block)[1,:s]
+ingress_block_B = pois[(label="1:main signal",)][1,:s]
 
 # ╔═╡ 30c676d2-fbe2-402e-b443-a2b547ada139
-end_block_B = filter(row -> row.label == "2:clearing point", run_block)[1,:t]
+end_block_B = pois[(label="2:clearing point",)][1,:t]
 
 # ╔═╡ 83886f8d-8dad-4d70-b3d6-236ab1e3835e
-egress_block_B = filter(row -> row.label == "2:main signal", run_block)[1,:s]
+egress_block_B = pois[(label="2:main signal",)][1,:s]
 
 # ╔═╡ 390f7bb4-55d8-44ba-b229-7d66ac4fbe4e
 blocking_time_B = end_block_B - start_block_B
@@ -536,6 +549,10 @@ fig_realworld
 # ╟─2f3340ee-e493-46aa-a044-095832bc297c
 # ╠═5ff7f35f-5c0e-4f8f-b34d-1b56fa0b4345
 # ╟─bfa544d5-cae5-4195-8e78-20479d8bbbb5
+# ╠═237c8c1f-7446-448a-9889-183a6ae9ef1b
+# ╟─04d8a12a-3e1d-4fb5-9c5a-94102bc1f5f4
+# ╠═56fa6b2a-803d-41f7-87ad-8daea736ea29
+# ╟─e8564003-3767-4bda-990b-5f0d04d66bb3
 # ╠═8c044304-e067-46fd-ae04-2bccf6ceafd6
 # ╟─247477d9-6a3d-44f3-b9a0-854cb9abad3b
 # ╠═e356bb7b-ae58-4acc-b343-9c010cb014d2
